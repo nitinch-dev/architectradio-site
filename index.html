@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Architect Radio: system design you can watch break</title>
+<meta name="description" content="System-design interview questions from a working solutions architect: banking, login and identity systems, drawn from the naive version to the one that survives real traffic. Plus AI for Builders.">
+<link rel="canonical" href="https://architectradio.live/">
+<meta name="theme-color" content="#0d1b2a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Architect Radio">
+<meta property="og:url" content="https://architectradio.live/">
+<meta property="og:title" content="Architect Radio: system design you can watch break">
+<meta property="og:description" content="System-design interview questions from a working solutions architect: banking, login and identity, from the naive version to the one that survives real traffic.">
+<meta property="og:image" content="https://architectradio.live/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Architect Radio: a service graph for an OTP login and payment flow on a navy blueprint grid">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Architect Radio: system design you can watch break">
+<meta name="twitter:description" content="System-design interview questions from a working solutions architect: banking, login and identity.">
+<meta name="twitter:image" content="https://architectradio.live/og.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="/assets/site.css">
+<script>document.documentElement.classList.add('js')</script>
+<script src="/assets/hero.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="g-break" viewBox="0 0 22 22">
+    <circle cx="4" cy="11" r="2.6" fill="currentColor"/>
+    <circle cx="18" cy="11" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <path d="M7 11h3.2M12.6 11h2.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M10.4 14.5l2-7" stroke="#e5564c" stroke-width="1.6" stroke-linecap="round"/>
+  </symbol>
+</svg>
+
+<header class="site-header">
+  <a class="wordmark" href="/" aria-label="Architect Radio home">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect x=".75" y=".75" width="30.5" height="30.5" rx="7.25" fill="#162235" stroke="#22344f" stroke-width="1.5"/><path d="M9 21.5h4.5a3 3 0 0 0 3-3v-5a3 3 0 0 1 3-3H23" fill="none" stroke="#8fa3bc" stroke-width="1.8" stroke-linecap="round"/><circle cx="9" cy="21.5" r="3.2" fill="#f0f4f8"/><circle cx="23" cy="10.5" r="3.6" fill="#e8a838"/></svg>
+    Architect Radio
+  </a>
+  <nav class="site-nav" aria-label="Sections">
+    <a href="#questions">Interview questions</a>
+    <a href="#ai-for-builders">AI for Builders</a>
+    <a href="#publisher">Publisher</a>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-stage" data-hero-stage>
+      <canvas data-hero-canvas aria-hidden="true"></canvas>
+      <p class="hero-status" data-hero-status data-kind="ok" aria-hidden="true">Steady traffic: logins, sessions, payments</p>
+      <p class="sr-only">Animated diagram: an OTP login and payment system. Requests flow from the app through a gateway to auth, OTP, sessions and the ledger. A traffic spike breaks the SMS provider until a queue is added, and a retry storm double-charges a payment until an idempotency key is added.</p>
+    </div>
+    <div class="hero-copy">
+      <h1 id="hero-title"><span class="line">Design the system.</span> <span class="line">Then watch it break.</span></h1>
+      <p class="hero-lede">System-design interview questions from a working solutions architect. <strong>Banking, login and identity</strong>, drawn from the naive version to the one that survives real traffic. Plus AI for Builders: real AI builds, with the design, the evals and the cost.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://www.youtube.com/@architectradio" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1-5.8 3.1z"/></svg>
+          Subscribe on YouTube
+        </a>
+        <a class="btn btn-secondary" href="https://www.instagram.com/architectradio" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.3" cy="6.7" r="1.2" fill="currentColor"/></svg>
+          Follow on Instagram
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="questions" aria-labelledby="questions-title">
+    <div class="wrap split">
+      <div>
+        <h2 id="questions-title">Interview questions, answered like the real system</h2>
+        <p class="section-intro">The core series. Each video takes one question you could be asked in a system-design round, builds the naive answer first, breaks it under real traffic, and fixes it one component at a time.</p>
+        <p class="note">The diagram at the top of this page is two of these: the OTP spike and the double charge.</p>
+      </div>
+      <ul class="questions">
+        <li>
+          <svg class="glyph" aria-hidden="true"><use href="#g-break"/></svg>
+          <div><h3>Design OTP login that survives 70M users</h3><p>The naive SMS-OTP table, and the festival-night spike that melts it.</p><p class="domain">Login and identity</p></div>
+        </li>
+        <li>
+          <svg class="glyph" aria-hidden="true"><use href="#g-break"/></svg>
+          <div><h3>How does UPI stay up on festival sale days?</h3><p>The naive single-switch picture, and where a bank's side times out.</p><p class="domain">Banking and payments</p></div>
+        </li>
+        <li>
+          <svg class="glyph" aria-hidden="true"><use href="#g-break"/></svg>
+          <div><h3>Design payment retries that never charge twice</h3><p>The naive retry loop, and the idempotency keys that fix it.</p><p class="domain">Banking and payments</p></div>
+        </li>
+        <li>
+          <svg class="glyph" aria-hidden="true"><use href="#g-break"/></svg>
+          <div><h3>Design passkey login for a bank</h3><p>What changes in login design, and the recovery path that breaks it.</p><p class="domain">Login and identity</p></div>
+        </li>
+        <li>
+          <svg class="glyph" aria-hidden="true"><use href="#g-break"/></svg>
+          <div><h3>Design session handling when one user logs in on two devices</h3><p>The naive single token, and the logout that never lands.</p><p class="domain">Login and identity</p></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section pillar" id="ai-for-builders" aria-labelledby="ai-title">
+    <div class="wrap">
+      <h2 id="ai-title">AI for Builders</h2>
+      <p class="section-intro">The second series. Each video starts from something that was actually built with AI, then shows how it works, where it breaks and what it costs. Fewer hot takes, more evidence.</p>
+      <dl class="formats">
+        <div><dt>Architecture teardowns</dt><dd>How a real AI system fits together, and the one trade-off that matters.</dd></div>
+        <div><dt>Build logs</dt><dd>A build with AI agents, from the design to the evals to the bill in rupees.</dd></div>
+        <div><dt>India in context</dt><dd>What an AI shift means for Indian companies, with local prices and numbers.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="maker-title">
+    <div class="wrap maker">
+      <img src="/assets/avatar.webp" width="200" height="200" alt="Illustrated portrait of the Architect Radio host: a bearded man drawn in navy and amber" loading="lazy" decoding="async">
+      <div>
+        <h2 id="maker-title">Made by a working architect</h2>
+        <p>Architect Radio is one person: a software and solutions architect with a full-time job in the field. The questions are the ones architects really get asked to answer, and the examples stay anonymous: never a real company's internals.</p>
+        <p>Every script starts from real sources. The narration is in my own voice and the illustrations are drawn with AI, disclosed on every video. New videos every week, with Shorts in between.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="publisher" aria-labelledby="publisher-title">
+    <div class="wrap">
+      <div class="publisher">
+        <h2 id="publisher-title">Architect Radio Publisher</h2>
+        <p><strong>Architect Radio Publisher</strong> is the internal publishing tool of Architect Radio, a one-person technology-education brand. It runs as a command-line program on the owner's own computer and uploads the owner's finished videos to the owner's own YouTube channel, AI for Builders, as private or scheduled videos with their full metadata: title, description, tags, playlist, captions, custom thumbnail, AI-content disclosure and Hindi localizations. It then checks each upload field by field and collects the channel's own reach and analytics reports. It is not a public service, has no other users and never accesses anyone else's channel. The tool uses YouTube API Services; see our <a href="/privacy/">Privacy Policy</a> and <a href="/terms/">Terms of Service</a>, and the YouTube Terms of Service at <a href="https://www.youtube.com/t/terms" rel="noopener">https://www.youtube.com/t/terms</a>.</p>
+        <div class="links">
+          <a href="/privacy/">Privacy Policy</a>
+          <a href="/terms/">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div>
+      <a class="wordmark" href="/">Architect Radio</a>
+      <small>Contact: <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a></small>
+    </div>
+    <nav aria-label="Footer">
+      <ul class="footer-links">
+        <li><a href="https://www.youtube.com/@architectradio" rel="noopener">YouTube</a></li>
+        <li><a href="https://www.instagram.com/architectradio" rel="noopener">Instagram</a></li>
+        <li><a href="/privacy/">Privacy Policy</a></li>
+        <li><a href="/terms/">Terms of Service</a></li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>
