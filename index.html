@@ -56,8 +56,14 @@
 
 <main id="main">
   <section class="hero" aria-labelledby="hero-title">
+    <span class="hero-glow" aria-hidden="true"></span>
     <div class="hero-stage" data-hero-stage>
       <canvas data-hero-canvas aria-hidden="true"></canvas>
+      <ul class="hero-metrics" aria-hidden="true">
+        <li data-metric="rps"><b>1.24k</b>req/s</li>
+        <li data-metric="p99"><b>84 ms</b>p99</li>
+        <li data-metric="err"><b>0.1%</b>errors</li>
+      </ul>
       <p class="hero-status" data-hero-status data-kind="ok" aria-hidden="true">Steady traffic: logins, sessions, payments</p>
       <p class="sr-only">Animated diagram: an OTP login and payment system. Requests flow from the app through a gateway to auth, OTP, sessions and the ledger. A traffic spike breaks the SMS provider until a queue is added, and a retry storm double-charges a payment until an idempotency key is added.</p>
     </div>
@@ -150,7 +156,7 @@
   <div class="wrap">
     <div>
       <a class="wordmark" href="/">Architect Radio</a>
-      <small>Contact: <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a></small>
+      <small>Contact: <a href="mailto:hello@architectradio.live">hello@architectradio.live</a></small>
     </div>
     <nav aria-label="Footer">
       <ul class="footer-links">
